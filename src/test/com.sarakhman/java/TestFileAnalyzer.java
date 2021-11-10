@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
@@ -14,7 +15,7 @@ public class TestFileAnalyzer {
 
 
     public void createFileAnalyzer(){
-         fileAnalyzer= new FileAnalyzer();
+         fileAnalyzer = new FileAnalyzer();
          try(FileOutputStream file = new FileOutputStream("test1.txt");
              FileOutputStream file2 = new FileOutputStream("test2.txt");
              FileOutputStream file3 = new FileOutputStream("test.txt");) {
@@ -33,11 +34,56 @@ public class TestFileAnalyzer {
 
     }
 
+
     @Test
-    public void TestCountContainsWordReturnZero(){
+    public void TestCheckingListByWord() throws IOException {
         createFileAnalyzer();
-        assertEquals(0,fileAnalyzer.CountContainsWord("D:/JavaProjects/test.txt", "Java") );
+        String actualString = fileAnalyzer.readByPath("test2.txt");
+        ArrayList actualList = fileAnalyzer.convertStringToList(actualString);
+        String[] expected = new String[] {"Hello Java!", " Here we will say Java two times."};
+        ArrayList <String> actual = fileAnalyzer.checkingListByWord(actualList, "D:/JavaProjects/test2.txt", "Java");
+        assertEquals(expected[0],actual.get(0));
+        assertEquals(expected[1],actual.get(1));
+
     }
+
+
+    @Test
+    public void TestReadByPath() throws IOException {
+        createFileAnalyzer();
+        String actual = fileAnalyzer.readByPath("test1.txt");
+        String expected = "Hello Java!";
+        assertEquals(expected,actual);
+    }
+
+    @Test
+    public void TestConvertStringToStringArray() throws IOException {
+        createFileAnalyzer();
+        String text = fileAnalyzer.readByPath("test2.txt");
+        ArrayList actual = fileAnalyzer.convertStringToList(text);
+        ArrayList expected = new ArrayList ();
+        expected.add("Hello Java!");
+        expected.add(" Here we will say Java two times.");
+        expected.add(" Good luck.");
+
+        assertEquals(expected.get(0),actual.get(0));
+        assertEquals(expected.get(1),actual.get(1));
+        assertEquals(expected.get(2),actual.get(2));
+
+
+    }
+
+    @Test
+    public void TestConvertStringToList() throws IOException {
+        createFileAnalyzer();
+        String text = fileAnalyzer.readByPath("test2.txt");
+        String[] actual = fileAnalyzer.convertStringToStringArray(text);
+        String[] expected = new String[] {"Hello", "Java!"};
+        assertEquals(actual[0],expected[0]);
+        assertEquals(actual[1],expected[1]);
+
+    }
+
 
     @Test
     public void TestCountContainsWordThrowNullException(){
@@ -48,15 +94,15 @@ public class TestFileAnalyzer {
     }
 
     @Test
-    public void TestCountContainsWordReturnNumber(){
+    public void TestCountContainsWordReturnNumber() throws IOException {
         createFileAnalyzer();
-        assertEquals(1,fileAnalyzer.CountContainsWord("D:/JavaProjects/test1.txt", "Java") );
+        assertEquals(1,fileAnalyzer.countContainsWord("D:/JavaProjects/test1.txt", "Java!") );
     }
 
     @Test
-    public void TestAllStringsWithWordReturnEmptyArray(){
+    public void TestAllStringsWithWordReturnEmptyArray() throws IOException {
         createFileAnalyzer();
-        assertEquals(0,fileAnalyzer.allStringsWithWord("D:/JavaProjects/test.txt", "Java").length);
+        assertEquals(0,fileAnalyzer.allStringsWithWord("D:/JavaProjects/test.txt", "Java").size());
 
 
     }
@@ -70,10 +116,10 @@ public class TestFileAnalyzer {
     }
 
     @Test
-    public void TestAllStringsWithWordReturnAllStrings(){
+    public void TestAllStringsWithWordReturnAllStrings() throws IOException {
         createFileAnalyzer();
-        assertEquals("Hello Java!",fileAnalyzer.allStringsWithWord("D:/JavaProjects/test2.txt", "Java")[0]);
-        assertEquals("Here we will say Java two times.",fileAnalyzer.allStringsWithWord("D:/JavaProjects/test2.txt", "Java")[1]);
+        assertEquals("Hello Java!",fileAnalyzer.allStringsWithWord("D:/JavaProjects/test2.txt", "Java").get(0));
+        assertEquals(" Here we will say Java two times.",fileAnalyzer.allStringsWithWord("D:/JavaProjects/test2.txt", "Java").get(1));
 
     }
 
